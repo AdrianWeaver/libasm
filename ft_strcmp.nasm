@@ -4,8 +4,8 @@
 
 ft_strcmp:
 	_loop:
-		movzx	rax, byte [rsi]
-		xor		al, byte [rdi]
+		mov		al, [rdi]
+		sub		al, [rsi]
 		jnz		finish
 		cmp		byte [rsi], 0
 		je		finish
@@ -14,4 +14,5 @@ ft_strcmp:
 		jmp		_loop
 
 	finish:
+		movsx	rax, al
 		ret
