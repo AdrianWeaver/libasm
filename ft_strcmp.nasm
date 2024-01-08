@@ -3,6 +3,12 @@
 	section 	.text
 
 ft_strcmp:
+	xor		rax, rax
+	cmp		qword rsi, 0
+	je		finish
+	cmp		qword rdi, 0
+	je		finish
+
 	_loop:
 		mov		al, [rdi]
 		sub		al, [rsi]

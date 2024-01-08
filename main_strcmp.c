@@ -16,6 +16,7 @@ int	main(void)
 		printf("%d\n", strcmp("", ""));
 		printf("%d\n", strcmp(NULL, NULL));
 		printf("%d\n", strcmp(str, str2));
+		printf("%d\n", strcmp("j", "jcourtoilabg"));
 		printf("%d\n", strcmp("wesh", "alors"));
 		printf("%d\n", strcmp("wesh", "wesh"));
 		printf("%d\n", strcmp("alors", "wesh"));
@@ -32,6 +33,7 @@ int	main(void)
 		printf("%d\n", ft_strcmp("", ""));
 		printf("%d\n", ft_strcmp(NULL, NULL));
 		printf("%d\n", ft_strcmp(str, str2));
+		printf("%d\n", ft_strcmp("j", "jcourtoilabg"));
 		printf("%d\n", ft_strcmp("wesh", "alors"));
 		printf("%d\n", ft_strcmp("wesh", "wesh"));
 		printf("%d\n", ft_strcmp("alors", "wesh"));
