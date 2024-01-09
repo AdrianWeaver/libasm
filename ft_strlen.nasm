@@ -3,13 +3,13 @@
 	section	.text
 
 ft_strlen:
-	xor		rax, rax
+	xor		rax, rax	;setting the counter to 0
 
 	_loop:
-		cmp		byte [rdi], 0
+		cmp		byte [rdi], 0 ;checking for end of string
 		je		_end
-		inc		rax
-		inc		rdi
+		inc		rax				;incrementing counter
+		inc		rdi				;interating on string
 		jmp		_loop
 	_end:
 		ret
