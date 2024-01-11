@@ -13,6 +13,8 @@ int	main(void)
 		str2[0] = 2;
 		str2[1] = 0;
 		printf("strcmp\n");
+		printf("%d\n", strcmp("", ""));
+		printf("%d\n", strcmp(NULL, NULL));
 		printf("%d\n", strcmp(str, str2));
 		printf("%d\n", strcmp("wesh", "alors"));
 		printf("%d\n", strcmp("wesh", "wesh"));
@@ -27,6 +29,8 @@ int	main(void)
 		str2[0] = 2;
 		str2[1] = 0;
 		printf("ft_strcmp\n");
+		printf("%d\n", ft_strcmp("", ""));
+		printf("%d\n", ft_strcmp(NULL, NULL));
 		printf("%d\n", ft_strcmp(str, str2));
 		printf("%d\n", ft_strcmp("wesh", "alors"));
 		printf("%d\n", ft_strcmp("wesh", "wesh"));
