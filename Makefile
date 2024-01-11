@@ -17,7 +17,7 @@ AS			=	nasm
 ASFLAGS		=	-felf64
 
 
-CC			=	gcc
+CC			=	clang
 
 all:	$(NAME)
 
@@ -25,7 +25,7 @@ $(NAME):	$(OBJS)
 			
 
 main_%.o:		main_%.c
-			$(CC) $< -c -o $@ 
+			$(CC) $(CFLAGS) $< -c -o $@ 
 
 %.o:  		%.nasm
 			$(AS) $(ASFLAGS) $<
