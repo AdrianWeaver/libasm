@@ -38,5 +38,8 @@ fclean:		clean
 re:			clean
 			$(MAKE) all
 
-test:	ft_write.o main_write.o
+test_write:	ft_write.o main_write.o
 		$(CC) ft_write.o main_write.c && ./a.out
+		
+test:	ft_read.o main_read.o
+		$(CC) ft_read.o main_read.c && ./a.out
