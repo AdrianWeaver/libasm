@@ -12,6 +12,6 @@ int main(void)
 	printf("ft_write\n");
 	printf(" - write returned %ld \n", ft_write(0, "test", 5));
 	printf(" - write returned %ld \n", ft_write(1, "", 5));
-	printf(" - write returned %ld \n", ft_write(2, "", 5));
+	printf(" - write returned %ld \n", ft_write(3, "", 5));
 	return (0);
 }
