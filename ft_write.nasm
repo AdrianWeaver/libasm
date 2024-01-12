@@ -12,8 +12,8 @@ ft_write:
 
 	_write_error:
 		neg		rax, 				;negating rax to recover error code
-		mov		ecx, dword [rax]	;saving write error code to ecx
+		mov		ecx, eax			;saving write error code to ecx
 		call	__errno_location	;get address of errno
-		mov		[rax], ecx			;updating errno with 32bits error code
+		mov		[rax], ecx			;updating errno with 31bits error code
 		mov		rax, -1				;on error write needs to return -1
 		ret
