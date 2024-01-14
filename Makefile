@@ -40,22 +40,26 @@ re:			clean
 
 test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_read
 
-test_write:	ft_write.o main_write.o
+write_tester:	ft_write.o main_write.o 
 		$(CC) -o $@ ft_write.o main_write.o && ./$@
 		
-test_read:	ft_read.o main_read.o
+read_tester:	ft_read.o main_read.o
 		$(CC) -o $@ ft_read.o main_read.o && ./$@
 
-test_strlen:	ft_strlen.o main_strlen.o
+strlen_tester:	ft_strlen.o main_strlen.o
 		$(CC) -o $@ ft_strlen.o main_strlen.o && ./$@
 
-test_strcpy:	ft_strcpy.o main_strcpy.o
+strcpy_tester:	ft_strcpy.o main_strcpy.o
 		$(CC) -o $@ ft_strcpy.o main_strcpy.o && ./$@
 
-test_strcmp:	ft_strcmp.o main_strcmp.o
+strcmp_tester:	ft_strcmp.o main_strcmp.o
 		$(CC) -o $@ ft_strcmp.o main_strcmp.o && ./$@
 
-test_strdup:	ft_strdup.o main_strdup.o
+strdup_tester:	ft_strdup.o main_strdup.o
 		$(CC) -o $@ ft_strdup.o main_strdup.o && ./$@
 
-.PHONY: all, clean, fclean, re, test
+test_%:		%_tester
+				./$<
+
+
+.PHONY: all, clean, fclean, re, test, test_strlen, test_strcpy, test_strcmp, test_strdup, test_write, test_read
