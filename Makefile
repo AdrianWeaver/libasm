@@ -38,11 +38,24 @@ fclean:		clean
 re:			clean
 			$(MAKE) all
 
+test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_read
+
 test_write:	ft_write.o main_write.o
-		$(CC) ft_write.o main_write.c && ./a.out
+		$(CC) -o $@ ft_write.o main_write.o && ./$@
 		
 test_read:	ft_read.o main_read.o
-		$(CC) ft_read.o main_read.c && ./a.out
+		$(CC) -o $@ ft_read.o main_read.o && ./$@
 
 test_strlen:	ft_strlen.o main_strlen.o
-		$(CC) ft_strlen.o main_strlen.c && ./a.out
+		$(CC) -o $@ ft_strlen.o main_strlen.o && ./$@
+
+test_strcpy:	ft_strcpy.o main_strcpy.o
+		$(CC) -o $@ ft_strcpy.o main_strcpy.o && ./$@
+
+test_strcmp:	ft_strcmp.o main_strcmp.o
+		$(CC) -o $@ ft_strcmp.o main_strcmp.o && ./$@
+
+test_strdup:	ft_strdup.o main_strdup.o
+		$(CC) -o $@ ft_strdup.o main_strdup.o && ./$@
+
+.PHONY: all, clean, fclean, re, test
