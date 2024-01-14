@@ -4,7 +4,8 @@ SRCS		=	ft_strlen.s\
 			ft_strcpy.s\
 			ft_strcmp.s\
 			ft_write.s\
-			ft_read.s
+			ft_read.s\
+			ft_strdup.s
 
 CSRCS		=	main_write.c
 
@@ -22,7 +23,7 @@ CC			=	clang
 all:	$(NAME)
 
 $(NAME):	$(OBJS)
-			
+
 
 main_%.o:		main_%.c
 			$(CC) $(CFLAGS) $< -c -o $@ 
@@ -30,8 +31,8 @@ main_%.o:		main_%.c
 %.o:  		%.s
 			$(AS) $(ASFLAGS) $<
 
-clean:		
-		rm -rf $(OBJS)
+clean:
+			rm -rf $(OBJS)
 
 fclean:		clean
 			
@@ -40,12 +41,11 @@ re:			clean
 
 test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_read
 
-%_tester:	ft_%.o main_%.o 
-			@echo "called %_tester"
+%_tester:	$(OBJS) main_%.o
 			$(CC) -o $@ $^
-		
+
 test_%:		%_tester
-			@echo "called test_%"
 			./$<
 
 .PHONY: all, clean, fclean, re, test, test_strlen, test_strcpy, test_strcmp, test_strdup, test_write, test_read
+.SECONDARY:
