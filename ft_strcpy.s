@@ -6,13 +6,14 @@ ft_strcpy:
 	mov		rax, rdi ;storing the dest adress to return
 
 	_loop:
-		mov		rcx, [rsi] ;copying rsi's value in rdi using rcx as buffer
-		mov		[rdi], rcx
-		cmp		byte [rsi], 0 ;checking if \0 reached
-		jz		finish
+		mov		rcx, [rsi]			;copying the character of the source in a buffer
+		mov		[rdi], rcx			;copying the saved character in the dest
+		cmp		byte [rsi], 0	;checking if \0 reached
+		jz		_finish
 
-		inc		qword rsi
+		inc		rsi					;accessing next index in src string
+		inc		rdi					;accessing next index in dest string
 		jmp		_loop
 
-	finish:
+	_finish:
 		ret
