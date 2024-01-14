@@ -22,7 +22,7 @@ int	main(void)
 		str5[0] = -2;
 		str5[1] = 0;
 		printf("strcmp\n");
-		printf("NULL: %d\n", strcmp(NULL, NULL));
+		//printf("NULL: %d\n", strcmp(NULL, NULL));				//SIGSEV depending on implementations
 		printf("2 - 1: %d\n", strcmp(str, str2));
 		printf("127 - -128: %d\n", strcmp(str4, str3));
 		printf("1 - -128: %d\n", strcmp(str4, str));
@@ -50,7 +50,7 @@ int	main(void)
 		str5[0] = -2;
 		str5[1] = 0;
 		printf("ft_strcmp\n");
-		printf("NULL: %d\n", ft_strcmp(NULL, NULL));
+		//printf("NULL: %d\n", ft_strcmp(NULL, NULL));
 		printf("2 - 1: %d\n", ft_strcmp(str, str2));
 		printf("127 - -128: %d\n", ft_strcmp(str4, str3));
 		printf("1 - -128: %d\n", ft_strcmp(str4, str));
