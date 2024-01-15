@@ -5,7 +5,8 @@ SRCS		=	ft_strlen.s\
 			ft_strcmp.s\
 			ft_write.s\
 			ft_read.s\
-			ft_strdup.s
+			ft_strdup.s\
+			ft_atoi_base.s
 
 CSRCS		=	main_write.c
 
@@ -20,7 +21,9 @@ ASFLAGS		=	-felf64
 
 CC			=	clang
 
-all:	$(NAME)
+all:		$(NAME)
+
+bonus:		all
 
 $(NAME):	$(OBJS)
 

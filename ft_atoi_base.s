@@ -30,7 +30,7 @@ _create_int:
 	call	_get_base_index
 	cmp		rdx, -1
 	je		_atoi_error
-	mul		rax, rdx			;nb = (nb * base_index) + base_len
+	mul		rdx					;nb = (nb * base_index) + base_len
 	add		rax, r8				;adding base_len
 	inc		r10					;iterating to next char
 	cmp		r10, 0				;checking for \0
@@ -69,15 +69,16 @@ _outer_loop:
 	cmp		rdi, 02DH			;checks if the value is a -
 	je		_base_error			;jmp if equal
 	mov		rdx, [rdi]			;storing current char for comparison
-	mov		r8, rdi + 1			;setting deeper loop value using r8
-	cmp		[r8], 0				;checking for \0
+	mov		r8, rdi				;setting deeper loop value using r8
+	add		r8,	1				;incrementing pointer
+	cmp		byte [r8], 0		;checking for \0
 	je		_valid_base			;validating base
 
 _inner_loop:					;this checks for duplicates
 	cmp		[r8], rdi			;comparison loop1 values to all other indexes
 	je		_base_error
 	inc		r8					;go to next char
-	cmp		[r8], 0				;check for \0 to quit the inner loop
+	cmp		byte [r8], 0		;check for \0 to quit the inner loop
 	jne		_inner_loop
 	inc		rdi					;checking next index
 	loop	_outer_loop				;going back to the beginning of the loop
