@@ -11,6 +11,7 @@
 
 ft_strdup:
 	push	rdi			;storing the src pointer to keep it safe
+	sub		rsp, 01H	;aligning the stack to 16bytes
 	call	ft_strlen	;calculating the length of the src string
 	add		rax, 1		;adding one to length of src string to account for \0
 	mov		rdi, rax	;preparing the call for malloc with the length of src string
@@ -18,6 +19,7 @@ ft_strdup:
 	cmp		rax, 0		;checking for errors during malloc
 	jz		_dup_err	;error management if malloc returned NULL
 	mov		rdi, rax	;setting dest address for ft_strcpy
+	add		rsp, 01H	;aligning the stack to 16bytes
 	pop		rsi			;recovering the src pointer
 	call	ft_strcpy	;copying strings
 	ret
