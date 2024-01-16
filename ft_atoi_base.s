@@ -9,6 +9,7 @@
 ft_atoi_base:
 	push		rdi				;saving the src string on stack
 	push		rsi				;saving the base on stack
+	mov			rdi, rsi		;setting base as arg1 for ft_strlen
 	call		ft_strlen
 	mov			rdi, rsi		;set base as arg1 for check_base
 	mov			rsi, rax		;set base_len as arg2 for check_base
@@ -24,30 +25,29 @@ ft_atoi_base:
 	xor			rax, rax		;setting number to return to zero
 	
 _create_int:
-	mov		rdi, [r10]			;passing 'char' to get index
+	mov		dil, byte [r10]		;passing 'char' to get index
 	mov		rsi, r9				;passing base pointer
 	mov		rcx, r8				;preparing get_base_index loop
+	mul		r8					;nb = (nb * base_index) + base_len
+	xor		rdx, rdx			;_get_base_index will return on rdx
 	call	_get_base_index
-	cmp		rdx, -1
-	je		_atoi_error
-	mul		rdx					;nb = (nb * base_index) + base_len
-	add		rax, r8				;adding base_len
+	cmp		rdx, -1				;checking if char is not in base
+	je		_end
+	add		rax, rdx			;adding base_len
 	inc		r10					;iterating to next char
-	cmp		r10, 0				;checking for \0
+	cmp		byte [r10], 0		;checking for \0
 	jne		_create_int			;looping until reaching end of string
-	ret
+	ret							;returning rax
 
-;						rdi,	rsi,
 ;int _get_base_index(char c, char *base)
 _get_base_index:
-	xor		rdx, rdx			;setting return value to 0 using 2nd return reg
-	cmp		rdi, [rsi]			;comparing char from string to base
-	ret
-	inc		rdx
-	inc		rsi
+	cmp		dil, byte [rsi]		;comparing char from string to base
+	je		_end
+	inc		rdx					;incrementing return value
+	inc		rsi					;incrementing index of base
 	loop	_get_base_index
-	mov		rdx, -1
-	ret
+	mov		rdx, -1				;no correspondance found, returning -1
+	ret							;returning rdx here instead of rax
 
 _atoi_error:
 	mov		rax, 0;
@@ -55,33 +55,33 @@ _atoi_error:
 
 ; check_base(char *base, int base_len)
 _check_base:
-	mov		rcx, rsi			;setting base_length as counter	
 	cmp		rsi, 02H			;checking if base < MIN possible size
 	jl		_base_error			;calling erorr if base is too short
+	mov		rcx, rsi			;setting base_length as counter	
 
-_outer_loop:
-	cmp		rdi, 020H			;checks if the value is below printables
-	jl		_base_error			;jmp if lower than comparison value
-	cmp		rdi, 07FH			;checks if the value is above printables
-	jg		_base_error			;jmp if greater than comparison value
-	cmp		rdi, 02BH			;checks if the value is a +
-	je		_base_error			;jmp if equal
-	cmp		rdi, 02DH			;checks if the value is a -
-	je		_base_error			;jmp if equal
-	mov		rdx, [rdi]			;storing current char for comparison
-	mov		r8, rdi				;setting deeper loop value using r8
-	add		r8,	1				;incrementing pointer
-	cmp		byte [r8], 0		;checking for \0
+_check_b_outer_loop:
+	mov		dl, byte [rdi]		;storing current char for comparisons
+	cmp		dl, 020H			;checks if the value is below printables
+	jl		_base_error			;jmp if lower than printable
+	cmp		dl, 07FH			;checks if the value is above printables
+	jg		_base_error			;jmp if greater than printable
+	cmp		dl, 02BH			;checks if the value is a +
+	je		_base_error			;jmp if equal to +
+	cmp		dl, 02DH			;checks if the value is a -
+	je		_base_error			;jmp if equal to -
+	mov		r8, rdi				;duplicating rdi pointer for inner-loop
+	add		r8,	1				;inner loop starts as outer-loop +1
+	cmp		byte [r8], 0		;if inner-loop reached \0 base is valid
 	je		_valid_base			;validating base
 
-_inner_loop:					;this checks for duplicates
-	cmp		[r8], rdi			;comparison loop1 values to all other indexes
-	je		_base_error
-	inc		r8					;go to next char
-	cmp		byte [r8], 0		;check for \0 to quit the inner loop
-	jne		_inner_loop
-	inc		rdi					;checking next index
-	loop	_outer_loop				;going back to the beginning of the loop
+_check_b_inner_loop:			;this checks for duplicates
+	cmp		dl, byte [r8]		;cmp outer/inner loops chars
+	je		_base_error			;duplicate found if true
+	inc		r8					;go to next char in inner-loop
+	cmp		byte [r8], 0		;while not at \0 inner-loop continues
+	jne		_check_b_inner_loop
+	inc		rdi					;incrementing outer loop
+	loop	_check_b_outer_loop	;looping again on outer-loop
 			
 _valid_base:
 	mov		rax, 0				;setting return code to 0
@@ -89,4 +89,7 @@ _valid_base:
 
 _base_error:
 	mov		rax, -1				;returning -1 if the base is incorrect
+	ret							;returning for incorrect base
+
+_end:
 	ret
