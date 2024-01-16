@@ -16,7 +16,7 @@ COBJS		=	$(CSRCS:.c=.o)
 
 
 AS			=	nasm
-ASFLAGS		=	-felf64
+ASFLAGS		=	-felf64 -g
 
 
 CC			=	clang
@@ -49,6 +49,10 @@ test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_read
 
 test_%:		%_tester
 			./$<
+
+sandbox:	sandbox.o
+			ld -o $@ $<
+			gdb $@
 
 .PHONY: all, clean, fclean, re, test, test_strlen, test_strcpy, test_strcmp, test_strdup, test_write, test_read
 .SECONDARY:
