@@ -6,22 +6,37 @@
 ;	int ft_atoi_base(char *str, char *base)
 
 ;	implement nb = nb * base + index
+	;stack is as follow
+	;	rbp	=	previous rbp 
+	;	rbp - 8 = rdi (src pointer)
+	;	rbp - 16 = rsi (base pointer)
+	;	rbp - 24 = base_len
+	;	rbp	- 28 = neg_flag
 ft_atoi_base:
-	push		rdi				;saving the src string on stack
-	push		rsi				;saving the base on stack
-	mov			rdi, rsi		;setting base as arg1 for ft_strlen
+	cmp			rdi, 0			;checking if str is NULL
+	je			_end
+	cmp			rsi, 0			;checking if base is NULL
+	je			_end
+	enter		32, 0			;making space on stack for 32 bytes
+	mov			[rbp - 16], rsi	;saving the base pointer on stack
+	call		_skip_ws		;skipping whitespaces and zeros
+	mov			[rbp - 8], rax	;save src without trailing whitespaces
+	mov			rdi, rax		;arg1 of _check_neg is str
+	mov			eax, 1			;preparing sign value for _check_neg
+	call		_check_neg		;checking for neg sign
+	mov			[rbp - 8], rdi	;save src without trailing +/-
+	mov			[rbp - 28], eax	;set neg/pos flag
+	mov			rdi, [rbp - 16]	;set base as arg1 for ft_strlen
 	call		ft_strlen
-	mov			rdi, rsi		;set base as arg1 for check_base
+	mov			rdi, [rbp - 16]	;set base as arg1 for check_base
 	mov			rsi, rax		;set base_len as arg2 for check_base
-	push		rax				;saving base_len on stack
-	sub			rsp, 02H		;16bytes aligning stack
+	mov			[rsp - 24], rax	;saving base_len on stack
 	call		_check_base
 	cmp			rax, 0			;checking check_base return code
 	jne			_atoi_error		;returning 0 in case of base error
-	add			rsp, 02H		;removing stack offset alignment
-	pop			r8				;recovering base_len from stack on rdx
-	pop			r9	 			;recovering base on from stack on rsi
-	pop			r10				;recovering src string from stack on rdi
+	mov			r8d, dword [rbp - 24]	;recovering base_len from stack
+	mov			r9, qword [rbp - 16] ;recovering pointer from stack
+	mov			r10, qword [rbp - 8];using r10 to iterate on src pointer
 	xor			rax, rax		;setting number to return to zero
 	
 _create_int:
@@ -37,7 +52,48 @@ _create_int:
 	inc		r10					;iterating to next char
 	cmp		byte [r10], 0		;checking for \0
 	jne		_create_int			;looping until reaching end of string
+	mul		dword [rbp - 28]	;multiplying by 1 or -1 depending on sign
+	leave
 	ret							;returning rax
+
+;int check_neg(char **str)
+	;skips leading +/- changing the start of the string
+	;returns -1 if neg 1 if pos
+_check_neg:
+	cmp		byte [rdi], 0		;check for \0
+	je		_end
+	cmp		byte [rdi], '-'		;check for '-' sign
+	je		_swap_neg			;if '-' swap neg sign and increment
+	cmp		byte [rdi], '+'		;check for '+'
+	jne		_end				;end checking if not + or -
+	inc		rdi					;check next char
+	jmp		_check_neg
+
+_swap_neg:
+	neg		eax					;swapping flag for neg value
+	inc		rdi					;check next char
+	jmp		_check_neg
+	
+_skip_ws:
+	;skipping \t \n \v \f \r and space
+	cmp		byte [rdi], 09H		;if tab skip
+	je		_skip
+	cmp		byte [rdi], 0AH		;if newline return
+	je		_skip
+	cmp		byte [rdi], 0BH		;if vertical tab return
+	je		_skip
+	cmp		byte [rdi], 0CH		;if form feed return
+	je		_skip
+	cmp		byte [rdi], 0DH		;if carriage return... return
+	je		_skip
+	cmp		byte [rdi], 020H	;if space return
+	je		_skip
+	mov		rax, rdi			;return new beginning of string
+	ret
+
+_skip:
+	inc		rdi
+	jmp		_skip_ws
 
 ;int _get_base_index(char c, char *base)
 _get_base_index:
@@ -51,6 +107,7 @@ _get_base_index:
 
 _atoi_error:
 	mov		rax, 0;
+	leave
 	ret
 
 ; check_base(char *base, int base_len)
