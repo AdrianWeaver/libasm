@@ -7,7 +7,8 @@ SRCS		=	ft_strlen.s\
 			ft_read.s\
 			ft_strdup.s\
 			ft_atoi_base.s\
-			ft_list_push_front.s
+			ft_list_push_front.s\
+			ft_list_size.s
 
 CSRCS		=	main_write.c
 

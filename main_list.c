@@ -21,9 +21,17 @@ int	main(void)
 	myList.next = NULL;
 	myNewNode.data = &nb2;
 	myNewNode.next = NULL;
-	printf("Before:\nbegin.data = %d, next = %p\n", *((int *)(begin->data)), begin->next);
+
+	//Testing add_front
+	printf("list size before add_front: %d\n", ft_list_size(begin));
+	printf("Before push_front:\nbegin.data = %d, next = %p\n", *((int *)(begin->data)), begin->next);
 	ft_list_push_front(&begin, &myNewNode);
 
-	printf("After:\nbegin->data = %d, next = %p\n", *((int *)(begin->data)), begin->next);
+	printf("After push_front:\nbegin->data = %d, next = %p\n", *((int *)(begin->data)), begin->next);
+
+	//Testing size
+	printf("list size after push_front: %d\n", ft_list_size(begin));
+	printf("list_size a NULL: %d\n", ft_list_size(NULL));
+
 	return (0);
 }
