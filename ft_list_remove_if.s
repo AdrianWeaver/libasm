@@ -1,5 +1,4 @@
 
-
 		section		.data
 		section		.text
 		global		ft_remove_if
@@ -14,33 +13,50 @@ ft_remove_if:
 	je		_end
 	cmp		rdx, 0		;check if third arg is NULL
 	je		_end
-	mov		rcx, [rdi]	;saving first node
+	cmp		rcx, 0		;check if fourth arg is NULL
+	je		_end
+	mov		r10, rdi	;saving first node
 
 _loop:
-	call	[rsi]			;calling comparison function
+	cmp		[rdi], 0		;quitting if end of list
+	je		_end
+	mov		r9,	rdi			;saving rdi
+	mov		rdi, [rdi]		;preparing arg for comparison fuction
+	call	rdx				;calling comparison function
 	cmp		rax, 0			
-	je		_remove			;if cmp returned remove is called
-	cmp		qword [rdi], 0		;if current node is NULL quit
+	mov		rdi, r9			;replacing saved node
+	je		_free			;if cmp returned free is called
+	cmp		qword [rdi], 0	;if current node is NULL quit
 	je		_end
 	mov		r8,	rdi			;save "previous" node
 	mov		rdi, [rdi + 8]	;going to next address
 	jmp		_loop
 
 _end:
-	mov		[rdi], rdx	;returning head of list
+	mov		rdi, r10	;returning head of list
 	ret
 
-_remove:
-	cmp		rdi, rdx
+_free:
+	cmp		rdi, r10		;check if node to remove is first of list
 	je		_remove_head
 	mov		r9,	[rdi + 8]	;save next address
 	mov		[r8 + 8], r9	;links previous-next with current-next
-	call	[rdx]				;delete current node using free function
+	call	rcx				;delete current node using free function
 
 _remove_head:
-	mov		rdx, [rdx + 8]		;replacing the saved head with next
-	call	[rdx]					;deleting node using free function
-	mov		rdi, [rdx + 8]		;replacing the current head with next
+	mov		r10, [rdi + 8]		;replacing the saved head with next
+	call	rcx					;deleting node using free function
+	mov		rdi, r10			;replacing the current head with next
 	cmp		rdi, 0				;checking if end of list reached
 	je		_end
 	jmp		_loop
+
+
+
+
+
+	;A lot of errors in this file.
+	;free function is not a remove node function
+	;now need to remove the node.
+	;a lot of things need fixing here.
+	;#dontcodewhentired
