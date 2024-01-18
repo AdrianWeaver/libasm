@@ -1,19 +1,21 @@
+
+	section		.data
+	section		.text
 	global		ft_strcpy
 
-	section		.text
-
+; char *strcpy(char *dest, char *src);
 ft_strcpy:
-	mov		rax, rdi ;storing the dest adress to return
+	mov		rax, rdi		;storing the dest adress to return
+_loop:
+	mov		rcx, [rsi]		;buffering src char.
+	mov		[rdi], rcx		;copying buffered char to dest
+	cmp		byte [rsi], 0	;checking if end of string reached
+	jz		_finish
+	inc		rsi				;iterating on src string
+	inc		rdi				;iterating on dest string
+	jmp		_loop
 
-	_loop:
-		mov		rcx, [rsi]			;copying the character of the source in a buffer
-		mov		[rdi], rcx			;copying the saved character in the dest
-		cmp		byte [rsi], 0		;checking if \0 reached
-		jz		_finish
+_finish:
+	ret
 
-		inc		rsi					;accessing next index in src string
-		inc		rdi					;accessing next index in dest string
-		jmp		_loop
-
-	_finish:
-		ret
+	section		.bss

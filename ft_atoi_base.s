@@ -1,7 +1,8 @@
-	global		ft_atoi_base
 
 	extern		ft_strlen
+	section		.data
 	section		.text
+	global		ft_atoi_base
 
 ;	int ft_atoi_base(char *str, char *base)
 
@@ -150,3 +151,5 @@ _base_error:
 
 _end:
 	ret
+
+	section		.bss
