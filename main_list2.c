@@ -11,9 +11,9 @@ void	ft_list_push_front(t_list **begin, t_list *data);
 
 int	ft_remove_if(t_list **begin, void *data_ref, int (*cmp)(), void (*free_fct)(void*));
 
-int lower(void *data, int value)
+int lower(void *data, void *data_ref)
 {
-	return (!(*(int*)data < value));
+	return (!(*(int*)data < *(int*)data_ref));
 }
 
 t_list	*create_random_list(unsigned int size)
@@ -47,10 +47,11 @@ void	ft_print_list(t_list *list)
 		if (list == NULL)
 			return;
 		if (list->data == NULL){
-			printf("%s\n", "empty data");
+			printf("Node %d: %s\n", i, "empty data");
 			continue;
 		}
-		printf("Node %d: %d\n", i, *(int*)list->data);
+		else
+			printf("Node %d: %d\n", i, *(int*)list->data);
 		list = list->next;
 	}
 }
@@ -63,20 +64,21 @@ int	main(void)
 		int		nb = 42;
 
 		begin = create_random_list(42);
+		ft_print_list(begin);
 		//TESTING REMOVE IF
 		ft_remove_if(&begin, &nb, &lower, &freemium);
-		for (;;){
-			if (!begin)
-				break;
-			if (!begin->data){
-				printf("%s\n", "empty data");
-				continue;
-			}
-			printf("Node: %d\n", *(int*)begin->data);
-			begin = begin->next;
-		}
 		printf("%s\n", "AFTER REMOVE IF");
 		ft_print_list(begin);
+		for (;;){
+			t_list	*next;
+
+			if (!begin)
+				break;
+			next =	begin->next;
+			free(begin->data);
+			free(begin);
+			begin = next;
+		}
 	}
 
 	//TESTING SORT
@@ -107,6 +109,16 @@ int	main(void)
 			free(tmp);
 		}
 		//ft_list_sort(&begin);
+		for (;;){
+			t_list	*next;
+
+			if (!begin)
+				break;
+			next =	begin->next;
+			free(begin->data);
+			free(begin);
+			begin = next;
+		}
 	}
 
 

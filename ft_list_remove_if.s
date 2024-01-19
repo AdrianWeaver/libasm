@@ -1,4 +1,6 @@
 
+		extern		free
+
 		section		.data
 		section		.text
 		global		ft_remove_if
@@ -7,56 +9,70 @@
 	;cmp function - int	(list_ptr->data, data_ref);
 	;free function - void (list_ptr->data);
 ft_remove_if:
-	cmp		rdi, 0		;check if first arg is NULL
-	je		_end
-	cmp		rsi, 0		;check if second arg is NULL
-	je		_end
-	cmp		rdx, 0		;check if third arg is NULL
-	je		_end
-	cmp		rcx, 0		;check if fourth arg is NULL
-	je		_end
-	mov		r10, rdi	;saving first node
+	cmp		rdi, 0				;check if first arg is NULL
+	je		_error
+	cmp		qword [rdi], 0		;check if first arg points on NULL
+	je		_error
+	cmp		rsi, 0				;check if second arg is NULL
+	je		_error
+	cmp		rdx, 0				;check if third arg is NULL
+	je		_error
+	cmp		rcx, 0				;check if fourth arg is NULL
+	je		_error
+	enter	64, 0				;preparing stack for register saves needs to be 16bytes aligned
+	mov		[rsp], rbx			;saving registers about to be used -- begin list
+	mov		[rsp + 8], r12		;r12 - first node
+	mov		[rsp + 16], r13		;r13 - previous node
+	mov		[rsp + 24], r14		;r14 - current node
+	mov		[rsp + 32], r15		;r15 - second arg (data_ref)
+	mov		[rsp + 40], rdx		;saving comp function on stack	
+	mov		[rsp + 48], rcx		;saving free function on stack
+	mov		r15, rsi			;saving rsi in r15
+	mov		rbx, rdi			;saving return pointer
+	mov		r12, [rdi]			;saving first node
+	mov		rdi, [rdi]			;dereferencing **list to get *list
 
 _loop:
-	cmp		[rdi], 0		;quitting if end of list
+	cmp		rdi, 0			;quitting if end of list
 	je		_end
-	mov		r9,	rdi			;saving rdi
-	mov		rdi, [rdi]		;preparing arg for comparison fuction
-	call	rdx				;calling comparison function
+	mov		r14, rdi		;saving current node
+	mov		rdi, [rdi]		;preparing arg for comparison function, node->data
+	mov		rsi, r15		;preparing arg2 for comparison function
+	call	[rsp + 40]		;calling comparison function
 	cmp		rax, 0			
-	mov		rdi, r9			;replacing saved node
-	je		_free			;if cmp returned free is called
-	cmp		qword [rdi], 0	;if current node is NULL quit
-	je		_end
-	mov		r8,	rdi			;save "previous" node
-	mov		rdi, [rdi + 8]	;going to next address
+	je		_remove			;if cmp returned 0 deleting node
+	mov		r13, r14		;save current node as "previous" node for next iteration
+	mov		rdi, [r14 + 8]	;iterating to next node
 	jmp		_loop
 
-_end:
-	mov		rdi, r10	;returning head of list
+_error:
 	ret
 
-_free:
+_end:
+	mov		[rbx], r12		;returning head of list
+	mov		rbx, [rsp]		;restoring rbx
+	mov		r12, [rsp + 8]	;restoring r12
+	mov		r13, [rsp + 16]	;restoring r13
+	mov		r14, [rsp + 24]	;restoring r14
+	mov		r15, [rsp + 32]	;restoring r15
+	leave
+	ret
+
+_remove:
+	call	[rsp + 48]		;clearing data using free function
+	mov		rdi, r14		;get current node
 	cmp		rdi, r10		;check if node to remove is first of list
 	je		_remove_head
-	mov		r9,	[rdi + 8]	;save next address
-	mov		[r8 + 8], r9	;links previous-next with current-next
-	call	rcx				;delete current node using free function
+	mov		r14, [rdi + 8]	;iterating to next address using a buffer
+	mov		[r13 + 8], r14	;links previous-next with current-next
+	call	free			;freeing current node
+	mov		rdi, r14		;copying next node in rdi for next loop
+	jmp		_loop
 
 _remove_head:
-	mov		r10, [rdi + 8]		;replacing the saved head with next
-	call	rcx					;deleting node using free function
-	mov		rdi, r10			;replacing the current head with next
+	mov		r12, [rdi + 8]		;replacing the saved head with next
+	call	free				;freeing current node
+	mov		rdi, r12			;replacing the current head with next
 	cmp		rdi, 0				;checking if end of list reached
 	je		_end
 	jmp		_loop
-
-
-
-
-
-	;A lot of errors in this file.
-	;free function is not a remove node function
-	;now need to remove the node.
-	;a lot of things need fixing here.
-	;#dontcodewhentired

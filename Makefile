@@ -20,10 +20,11 @@ COBJS		=	$(CSRCS:.c=.o)
 
 
 AS			=	nasm
-ASFLAGS		=	-felf64
+ASFLAGS		=	-felf64 -g
 
 
 CC			=	clang
+CFLAGS	=	-g3
 
 all:		$(NAME)
 
@@ -49,10 +50,13 @@ re:			clean
 test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_read
 
 %_tester:	$(OBJS) main_%.o
-			$(CC) -o $@ $^
+			$(CC) $(CFLAGS) -o $@ $^
 
 test_%:		%_tester
 			./$<
+
+vtest_%:	%_tester
+			valgrind ./$<
 
 .PHONY: all, clean, fclean, re, test, test_strlen, test_strcpy, test_strcmp, test_strdup, test_write, test_read
 .SECONDARY:
