@@ -19,7 +19,7 @@ int lower(void *data, void *data_ref)
 
 int higher(void *data, void *data_ref)
 {
-	return ((*(int*)data < *(int*)data_ref));
+	return (!(*(int*)data > *(int*)data_ref));
 }
 
 t_list	*create_random_list(unsigned int size)
@@ -54,6 +54,7 @@ void	ft_print_list(t_list *list)
 			return;
 		if (list->data == NULL){
 			printf("Node %d: %s\n", i, "empty data");
+			list = list->next;
 			continue;
 		}
 		else
@@ -82,9 +83,9 @@ int	main(void)
 	t_list	*begin;
 	int		nb = 42;
 
-	begin = create_random_list(42);
+	begin = create_random_list(nb);
 	ft_print_list(begin);
-	ft_list_sort(&begin, &lower);
+	ft_list_sort(&begin, &higher);
 	printf("%s\n", "AFTER SORT");
 	ft_print_list(begin);
 	ft_clear_list(begin, &freemium);
