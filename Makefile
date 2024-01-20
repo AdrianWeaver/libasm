@@ -40,7 +40,7 @@ all:		$(NAME)
 bonus:		all
 
 $(NAME):	$(OBJS)
-
+			ar -rcs $@ $(OBJS)
 
 main_%.o:	main_%.c
 			$(CC) $(CFLAGS) $< -c -o $@ 
@@ -61,7 +61,7 @@ re:			clean
 
 test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_remove_if test_sort
 
-%_tester:	$(OBJS) main_%.o
+%_tester:	main_%.o $(NAME) 
 			$(CC) $(CFLAGS) -o $@ $^
 
 test_%:		%_tester
