@@ -12,7 +12,16 @@ SRCS		=	ft_strlen.s\
 			ft_list_sort.s\
 			ft_list_remove_if.s
 
-CSRCS		=	main_write.c
+CSRCS		=	main_write.c\
+				main_read.c\
+				main_atoi_base.c\
+				main_size.c\
+				main_remove_if.c\
+				main_sort.c\
+				main_strcmp.c\
+				main_strcpy.c\
+				main_strdup.c\
+				main_strlen.c
 
 OBJS		=	$(SRCS:.s=.o)
 
@@ -33,7 +42,7 @@ bonus:		all
 $(NAME):	$(OBJS)
 
 
-main_%.o:		main_%.c
+main_%.o:	main_%.c
 			$(CC) $(CFLAGS) $< -c -o $@ 
 
 %.o:  		%.s
@@ -41,13 +50,16 @@ main_%.o:		main_%.c
 
 clean:
 			rm -rf $(OBJS)
+			rm -rf $(COBJS)
 
 fclean:		clean
+			rm -rf $(NAME)
+			rm -rf *_tester
 			
 re:			clean
 			$(MAKE) all
 
-test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_read
+test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_remove_if test_sort
 
 %_tester:	$(OBJS) main_%.o
 			$(CC) $(CFLAGS) -o $@ $^
@@ -58,5 +70,5 @@ test_%:		%_tester
 vtest_%:	%_tester
 			valgrind ./$<
 
-.PHONY: all, clean, fclean, re, test, test_strlen, test_strcpy, test_strcmp, test_strdup, test_write, test_read
+.PHONY: all, clean, fclean, re, test*
 .SECONDARY:
