@@ -27,7 +27,7 @@ ft_list_remove_if:
 	mov		[rsp + 32], r15		;r15 - second arg (data_ref)
 	mov		[rsp + 40], rdx		;saving comp function on stack	
 	mov		[rsp + 48], rcx		;saving free function on stack
-	mov		r15, rsi			;saving rsi in r15
+	mov		r15, rsi			;saving data_ref in r15
 	mov		rbx, rdi			;saving return pointer
 	mov		r12, [rdi]			;saving first node
 	mov		rdi, [rdi]			;dereferencing **list to get *list
