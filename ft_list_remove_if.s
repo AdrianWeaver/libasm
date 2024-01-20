@@ -3,12 +3,12 @@
 
 		section		.data
 		section		.text
-		global		ft_remove_if
+		global		ft_list_remove_if
 
 ;void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *));
 	;cmp function - int	(list_ptr->data, data_ref);
 	;free function - void (list_ptr->data);
-ft_remove_if:
+ft_list_remove_if:
 	cmp		rdi, 0				;check if first arg is NULL
 	je		_error
 	cmp		qword [rdi], 0		;check if first arg points on NULL
