@@ -1,6 +1,19 @@
+	;file:		ft_atoi_base.s
+	;output:	part of libasm.a
+	;created:	15/01/2024
+	;modified:	22/01/2024
+	;author:	aweaver
+	;version:	nasm 2.15.05	for x86-64
+	;overview:
+		;this is part of the project libasm from school 42
+		;the purpose of this project is to learn asm x86-64 by coding
+		;a library of functions
+		;this function transforms a string in an int, taking into account
+		;the base used in the initial string
 
 	extern		ft_strlen
 	section		.data
+	section		.bss
 	section		.text
 	global		ft_atoi_base
 
@@ -151,5 +164,3 @@ _base_error:
 
 _end:
 	ret
-
-	section		.bss

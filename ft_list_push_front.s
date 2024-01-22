@@ -1,5 +1,21 @@
+	;file:		ft_list_push_front.s
+	;output:	part of libasm.a
+	;created:	18/01/2024
+	;modified:	22/01/2024
+	;author:	aweaver
+	;version:	nasm 2.15.05	for x86-64
+	;overview:
+		;this is part of the project libasm from school 42
+		;the purpose of this project is to learn asm x86-64 by coding
+		;a library of functions
+		;this function is used to add a node in a linked list and put it
+		;in front of the existing list
+		;the type of the list is as such
+		;8bytes - address of the data
+		;8bytes - address of the next node
 
 	section		.data
+	section		.bss
 	section		.text
 	global		ft_list_push_front
 
@@ -16,5 +32,4 @@ ft_list_push_front:
 
 _end:
 	ret
-
 

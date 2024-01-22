@@ -1,3 +1,16 @@
+	;file:		ft_strdup.s
+	;output:	part of libasm.a
+	;created:	05/01/2024
+	;modified:	22/01/2024
+	;author:	aweaver
+	;version:	nasm 2.15.05	for x86-64
+	;overview:
+		;this is part of the project libasm from school 42
+		;the purpose of this project is to learn asm x86-64 by coding
+		;a library of functions
+		;this is an implementation of strdup from libc
+		;this function is used to copy a string in a newly allocated one
+		;see man 3 strdup
 
 	extern	malloc
 	extern	ft_strlen
@@ -5,6 +18,7 @@
 	extern	__errno_location
 
 	section		.data
+	section		.bss
 	section		.text
 	global		ft_strdup
 
@@ -32,5 +46,3 @@ _dup_err:
 	mov		rax, -1				;setting the return to -1
 	leave						;releasing stack reservation
 	ret
-
-	section		.bss

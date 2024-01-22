@@ -1,4 +1,21 @@
+	;file:		ft_list_sort.s
+	;output:	part of libasm.a
+	;created:	18/01/2024
+	;modified:	22/01/2024
+	;author:	aweaver
+	;version:	nasm 2.15.05	for x86-64
+	;overview:
+		;this is part of the project libasm from school 42
+		;the purpose of this project is to learn asm x86-64 by coding
+		;a library of functions
+		;this function is used to sort a list, based on a comparison function
+		;the sorting algorithm is extremely naive and simple, some kind of bubble sort
+		;the type of the list is as such
+		;8bytes - address of the data
+		;8bytes - address of the next node
+
 	section	.data
+	section	.bss
 	section	.text
 
 	global	ft_list_sort
@@ -68,19 +85,35 @@ _swap_resume:
 	je		_swap_close
 	jmp		_swap_far			;normal case
 
+;in case the first link of the list is one of the two link that are swapped
+;the value of the **begin_list pointer needs to be changed and needs a special case
 _swap_head:
 	mov		r12, rbx			;put in outer-previous the pointer on head		
 	jmp		_swap_resume
 
+
+;Two swap conditions, if the two nodes are next to each others or not
+	;_swap close goes as follow case is A->next = B
+		;A->next becomes B->next
+		;B->next becomes A
+		;prev->A becomes B
 _swap_close:
 	mov		rcx, [r15 + 8]		;store inner->next
-	mov		[r14 + 8], rcx		;set A->next to B->next
-	mov		[r15 + 8], r14		;set B->next to A
-	mov		[r12], r15			;set prev->A->next to B
-								;no need to set prev B as it's actually becoming B
-	mov		r14, r15			;inner becomes new outer
+	mov		[r14 + 8], rcx		;set outer->next to inner->next
+	mov		[r15 + 8], r14		;set inner->next to outer
+	mov		[r12], r15			;set prev->outer->next to inner
+								;no need to set prev->inner as it was actually outer
+	mov		r14, r15			;inner becomes new outer before a new loop begins
 	jmp		_inner_loop_inc
 
+;Other swap condition, the two nodes are not next to each other
+;A and C need to swap with B in the middle
+	;_swap_far goes as follow case is A->next != C
+			;store C->next (D or NULL)
+			;C->next becomes A->next (B)
+			;prev->A becomes C
+			;prev->C->next (B->next) becomes A
+			;A->next becomes stored B->next
 _swap_far:
 	mov		rcx, [r15 + 8]		;store inner->next
 	mov		rax, [r14 + 8]		;store outer->next
@@ -103,24 +136,3 @@ _end:
 _error:
 	ret
 
-	;if node A is first swapping with X
-		;Head points on X for all cases : A-Prev is HEAD
-		;if A->next = B
-			;A->next becomes B->next
-			;B->next becomes A
-			;prev->A becomes B
-		;else A->next != B
-			;store B->next
-			;B->next becomes A->next
-			;prev->A becomes B
-			;prev->B becomes A
-			;A->next becomes stored B->next
-	
-	;needed:
-		;store for rbp				8		- stack
-		;store for HEAD				8		- register	rbx
-		;store for Prev-A			8		- register	r12
-		;store for Prev-B			8		- register	r13
-		;store for current_inner	8		- register	r14
-		;store for current_outer	8		- register	r15
-		;store for cmp function		8		- stack		
