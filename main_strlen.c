@@ -9,5 +9,8 @@ int main(int argv, char **argc)
 
 	printf("strlen %ld\n", strlen(str));
 	printf("ft_strlen %ld \n", ft_strlen(str));
+
+	printf("strlen %ld\n", strlen("huhuhuhuhuhuhuhuhuhuhuhuhuhuhuuhuhuh"));
+	printf("ft_strlen %ld \n", ft_strlen("huhuhuhuhuhuhuhuhuhuhuhuhuhuhuuhuhuh"));
 	return (0);
 }
