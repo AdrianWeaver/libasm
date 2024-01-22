@@ -6,7 +6,8 @@ int main()
 {
 	char str[1];
 	for (;;) {
-		ft_read(0, str, 1);
+		if (ft_read(0, str, 1) == 0)
+			break;
 		write(1, str, 1);
 	}
 	return (0);
