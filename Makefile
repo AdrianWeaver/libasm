@@ -61,6 +61,8 @@ re:			clean
 
 test:		test_strlen test_strcpy test_strcmp test_strdup test_write test_remove_if test_sort
 
+vtest:		vtest_strlen vtest_strcpy vtest_strcmp vtest_strdup vtest_write vtest_remove_if vtest_sort
+
 %_tester:	main_%.o $(NAME) 
 			$(CC) $(CFLAGS) -o $@ $^
 
@@ -70,5 +72,5 @@ test_%:		%_tester
 vtest_%:	%_tester
 			valgrind ./$<
 
-.PHONY: all, clean, fclean, re, test*
+.PHONY: all, clean, fclean, re, test*, vtest*
 .SECONDARY:
