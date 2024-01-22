@@ -21,8 +21,8 @@
 ft_strcpy:
 	mov		rax, rdi		;storing the dest adress to return
 _loop:
-	mov		rcx, [rsi]		;buffering src char.
-	mov		[rdi], rcx		;copying buffered char to dest
+	mov		cl, byte [rsi]		;buffering src char.
+	mov		[rdi], cl		;copying buffered char to dest
 	cmp		byte [rsi], 0	;checking if end of string reached
 	jz		_finish
 	inc		rsi				;iterating on src string
