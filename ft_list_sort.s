@@ -15,6 +15,7 @@
 		;8bytes - address of the next node
 
 	section	.data
+		ListNextOffset: equ 8
 	section	.bss
 	section	.text
 
@@ -46,9 +47,9 @@ ft_list_sort:
 _outer_loop:
 	cmp		r14, 0				;if reached end of loop return, list is sorted
 	je		_end
-	cmp		qword [r14 + 8], 0		;if next is 0 list is sorted
+	cmp		qword [r14 + ListNextOffset], 0		;if next is 0 list is sorted
 	je		_end
-	mov		r15, [r14 + 8]		;setting inner-loop-current
+	mov		r15, [r14 + ListNextOffset]		;setting inner-loop-current
 	mov		rax, r14			;address calcul prep
 	add		rax, 8				;adding 8 to current to get address of pointer on next
 	mov		r13, rax			;setting prev pointer for inner-loop
@@ -59,21 +60,21 @@ _inner_loop:
 	call	[rsp + 56]			;call cmp
 	cmp		rax, 0				;check return of function
 	je		_swap				;if cmp returned 0 jmp to swap
-	cmp		qword [r15 + 8], 0		;check next of inner-loop
+	cmp		qword [r15 + ListNextOffset], 0		;check next of inner-loop
 	je		_outer_loop_inc		;if next is NULL go back to outer loop	
 
 _inner_loop_inc:
 	mov		rax, r15
 	add		rax, 8
 	mov		r13, rax			;set current as new previous for inner loop
-	mov		r15, [r15 + 8]		;inner-current = next;
+	mov		r15, [r15 + ListNextOffset]		;inner-current = next;
 	jmp		_inner_loop			;loop on _inner_loop inconditionnaly
 
 _outer_loop_inc:
 	mov		rax, r14
-	add		rax, 8
+	add		rax, ListNextOffset
 	mov		r12, rax			;set prev-outer as current outer
-	mov		r14, [r14 + 8]		;go to next in outer loop
+	mov		r14, [r14 + ListNextOffset]		;go to next in outer loop
 	jmp		_outer_loop
 
 _swap:
@@ -81,7 +82,7 @@ _swap:
 	je		_swap_head			;special case handler for head of list
 
 _swap_resume:
-	cmp		[r14 + 8], r15		;check if the two nodes are next to each-other
+	cmp		[r14 + ListNextOffset], r15		;check if the two nodes are next to each-other
 	je		_swap_close
 	jmp		_swap_far			;normal case
 
@@ -98,9 +99,9 @@ _swap_head:
 		;B->next becomes A
 		;prev->A becomes B
 _swap_close:
-	mov		rcx, [r15 + 8]		;store inner->next
-	mov		[r14 + 8], rcx		;set outer->next to inner->next
-	mov		[r15 + 8], r14		;set inner->next to outer
+	mov		rcx, [r15 + ListNextOffset]		;store inner->next
+	mov		[r14 + ListNextOffset], rcx		;set outer->next to inner->next
+	mov		[r15 + ListNextOffset], r14		;set inner->next to outer
 	mov		[r12], r15			;set prev->outer->next to inner
 								;no need to set prev->inner as it was actually outer
 	mov		r14, r15			;inner becomes new outer before a new loop begins
@@ -115,12 +116,12 @@ _swap_close:
 			;prev->C->next (B->next) becomes A
 			;A->next becomes stored B->next
 _swap_far:
-	mov		rcx, [r15 + 8]		;store inner->next
-	mov		rax, [r14 + 8]		;store outer->next
-	mov		[r15 + 8], rax		;set inner->next to outer->next
+	mov		rcx, [r15 + ListNextOffset]		;store inner->next
+	mov		rax, [r14 + ListNextOffset]		;store outer->next
+	mov		[r15 + ListNextOffset], rax		;set inner->next to outer->next
 	mov		[r12], r15			;set prev-outer->next to inner
 	mov		[r13], r14			;set prev-inner->next to outer
-	mov		[r14 + 8], rcx		;set A->next to B->next
+	mov		[r14 + ListNextOffset], rcx		;set A->next to B->next
 	mov		r14, r15			;inner becomes new outer
 	jmp		_inner_loop_inc
 
