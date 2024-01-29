@@ -19,7 +19,7 @@
 
 ;	int ft_atoi_base(char *str, char *base)
 
-;	implement nb = nb * base + index
+;	implement nb = nb * base_len + index in base of current decimal
 	;stack is as follow
 	;	rbp	=	previous rbp 
 	;	rbp - 8 = rdi (src pointer)
@@ -42,9 +42,9 @@ ft_atoi_base:
 	mov			[rbp - 28], eax	;set neg/pos flag
 	mov			rdi, [rbp - 16]	;set base as arg1 for ft_strlen
 	call		ft_strlen
+	mov			[rsp - 24], rax	;saving base_len on stack
 	mov			rdi, [rbp - 16]	;set base as arg1 for check_base
 	mov			rsi, rax		;set base_len as arg2 for check_base
-	mov			[rsp - 24], rax	;saving base_len on stack
 	call		_check_base
 	cmp			rax, 0			;checking check_base return code
 	jne			_atoi_error		;returning 0 in case of base error
@@ -57,12 +57,12 @@ _create_int:
 	mov		dil, byte [r10]		;passing 'char' to get index
 	mov		rsi, r9				;passing base pointer
 	mov		rcx, r8				;preparing get_base_index loop
-	mul		r8					;nb = (nb * base_index) + base_len
+	mul		qword [rsp - 24]	;nb = (nb * base_index) + base_len
 	xor		rdx, rdx			;_get_base_index will return on rdx
 	call	_get_base_index
 	cmp		rdx, -1				;checking if char is not in base
 	je		_end
-	add		rax, rdx			;adding base_len
+	add		rax, rdx			;adding decimal's base_index
 	inc		r10					;iterating to next char
 	cmp		byte [r10], 0		;checking for \0
 	jne		_create_int			;looping until reaching end of string
